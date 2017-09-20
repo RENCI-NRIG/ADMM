@@ -1,0 +1,8 @@
+# !/bin/bash
+# My A-ADMM script
+
+echo "./ADMMServer 65002 4" | at 17:11
+echo "./PronyADMM 127.0.0.1 65002 Y1_90.txt" | at 17:12
+echo "./PronyADMM 127.0.0.1 65002 Y2_90.txt" | at 17:12
+echo "./PronyADMM 127.0.0.1 65002 Y3_90.txt" | at 17:12
+echo "./PronyADMM 127.0.0.1 65002 Y4_90.txt" | at 17:12

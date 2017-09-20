@@ -1,0 +1,30 @@
+Prony Algorithm Implementation
+Author: Jianhua Zhang Feb,14th,2014
+
+Requirements: a) Linux enviroment
+	      b) Install all packages for armadillo-related library:
+1) libblas-dev
+2) liblapack-dev
+3) libatlas-dev
+4) libarmadillo-dev
+5) libboost-dev
+
+
+To run the PronyADMM source code, you need open five terminals, one for server, others for clients:
+
+Before running the code, please type 'make' to compile all source code. 
+1. At server terminal, run 
+	./ADMMServer 65009
+2. At each client terminal, run
+	./PronyADMM 127.0.0.1 65009 Y1.txt
+	./PronyADMM 127.0.0.1 65009 Y2.txt
+	./PronyADMM 127.0.0.1 65009 Y3.txt
+	./PronyADMM 127.0.0.1 65009 Y4.txt
+
+If you want change the iteration numbers, change Line 83 in PronyADMM_Server.cpp.
+
+Thanks for help.
+
+Note1: If you could not execute 'make' successfully, you can run g++ commands in Make file directely in terminal.  The reason is that my code is complied in 64bit system, if your system is 32bit, you need complie code without Make file for the first time.
+
+Note2: If you run this source code in 5 seperate VMs, and do remember that you give Server's IP instead of 127.0.0.1 at each client VM.

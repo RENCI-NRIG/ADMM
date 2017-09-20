@@ -1,0 +1,18 @@
+#!/bin/bash
+# Script to test my knowledge about variables!
+#
+clear
+myname=Vivek
+myos=TroubleOS
+myno=5
+echo "My name is $myname"
+echo "My os is $myos"
+echo
+echo
+echo "My number is $myno, can you see this number"
+(echo "expr 6+3")
+pwd
+#./ADMMServer 65001
+echo -e "\033[0m Today date is `date`"
+echo $SHELL
+ping 127.0.0.1

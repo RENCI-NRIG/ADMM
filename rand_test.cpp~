@@ -1,0 +1,98 @@
+/* srand example */
+#include <cstdio>      /* printf, NULL */
+#include <cstdlib>     /* srand, rand */
+#include <time.h>       /* time */
+#include <cmath> 
+#include <iostream>
+#include <unistd.h>
+#include <sys/time.h>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+double RandomGenerator(double mu, double sigma, double lambda, double p)
+{
+	double P_x, RANDSEED, step_size, x, error, RandomDelay, criteria=1000000.0;
+	int i, t_length=50;
+	step_size = 0.1;
+
+	//Step1: Generate a random number between 0 and 1;	
+	//srand (time(NULL));
+	RANDSEED = double(random()%1000000)/1000000;
+	printf ("First number: %f\n", RANDSEED);
+	
+	//Step2: Search the random delay which corresponds to generated random number
+	for(i=0; i<(int(t_length/step_size)+1); i++){
+		x =  i*step_size;
+		P_x =  0.5*(erf(mu/sqrt(2)/sigma) + erf((x-mu)/sqrt(2)/sigma)) + 0.5*(p-1)*exp(0.5*lambda*lambda*sigma*sigma+mu*lambda)*exp(-lambda*x)*(erf((lambda*sigma*sigma+mu)/sqrt(2)/sigma)+erf((x-lambda*sigma*sigma-mu)/sqrt(2)/sigma));
+		error = P_x - RANDSEED;
+		if (error < 0) error = -error;
+		if (error < criteria){
+			RandomDelay = x;
+			criteria = error;
+		}
+	} 	 
+	return RandomDelay;
+} 
+
+
+int main ()
+{
+	
+	struct timeval currenttime, currenttime_1, sleeptime;
+	double mu, sigma, lambda, p, RandomDelay;
+	int RandomDelay_int, i;
+	vector<int> delay_array;
+	int pre_delay, min_delay, client_index;
+	int ClientNum = 4;
+	mu = 53;
+	sigma = 0.078;
+	lambda = 1.39;
+	p = 0.58;
+	srand (time(NULL));
+/*
+	cout<<"Artifical Delay is ";
+	for (i=0; i<ClientNum; i++){
+		cout<<"t41_"<<i+1<<"	";
+	}
+	cout<<endl;
+*/
+	for (i=0; i<ClientNum; i++){
+		RandomDelay = RandomGenerator(mu, sigma, lambda, p);     // time unit here is ms
+  		cout<<"Random Delay is "<<RandomDelay<<endl; 
+		RandomDelay_int = int(RandomDelay*1000);	
+		delay_array.push_back(RandomDelay_int);
+		//usleep(100);
+	    }
+	
+	for (i=0; i<ClientNum; i++){
+		client_index = min_element(delay_array.begin(), delay_array.end()) - delay_array.begin();
+		cout<<"client_index is "<<client_index<<endl;
+		min_delay = delay_array[client_index];
+		cout<<"min_delay is "<<min_delay<<endl;
+		if (i==0){
+			pre_delay = min_delay;
+			usleep(min_delay);
+			cout<<"if i==0, min_delay is "<<min_delay<<endl;
+		} else {
+			usleep(min_delay-pre_delay);			
+			cout<<"if i!=0, sleep time is "<<min_delay-pre_delay<<endl;
+			pre_delay = min_delay;
+		}
+		delay_array[client_index] = 100000000;
+		cout<<"Update delay_array is "<<delay_array[client_index]<<endl;
+	}
+
+
+	RandomDelay = RandomGenerator(mu, sigma, lambda, p);
+	RandomDelay_int = int(RandomDelay*1000);
+  	cout<<"Random Delay is "<<RandomDelay_int<<endl;
+	gettimeofday (&currenttime, NULL);
+	cout<<"Current time is "<<currenttime.tv_sec*1000000+currenttime.tv_usec<<endl;
+	usleep(RandomDelay_int);
+ 	gettimeofday (&currenttime_1, NULL);
+	cout<<"After sleep Current time is "<<currenttime_1.tv_sec*1000000+currenttime_1.tv_usec<<endl;
+  	return 0;
+
+}
